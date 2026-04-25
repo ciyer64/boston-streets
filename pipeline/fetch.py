@@ -35,10 +35,10 @@ INCLUDE_HIGHWAY = "|".join([
 
 # Boston proper has a lot of tiny alleys and service roads — stricter filter
 MIN_SEGMENTS = {
-    "boston":    3,
-    "cambridge": 2,
-    "brookline": 2,
-    "somerville": 2,
+    "boston":    1,
+    "cambridge": 1,
+    "brookline": 1,
+    "somerville": 1,
 }
 
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"

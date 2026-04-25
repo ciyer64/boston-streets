@@ -1,18 +1,18 @@
 {
   "boston": {
-    "street_count": 744,
-    "segment_count": 6587
+    "street_count": 4240,
+    "segment_count": 10761
   },
   "cambridge": {
-    "street_count": 276,
-    "segment_count": 1540
+    "street_count": 774,
+    "segment_count": 2038
   },
   "brookline": {
-    "street_count": 151,
-    "segment_count": 732
+    "street_count": 426,
+    "segment_count": 1007
   },
   "somerville": {
-    "street_count": 240,
-    "segment_count": 1266
+    "street_count": 684,
+    "segment_count": 1710
   }
 }
