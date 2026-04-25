@@ -359,6 +359,10 @@ window.addEventListener('keydown', (e) => {
 });
 
 const ABBREVS = [
+  // Named-person shorthand
+  [/^JFK(\s|$)/i,  'John F. Kennedy '],
+  [/^MLK(\s|$)/i,  'Martin Luther King '],
+  // Street type suffixes
   [/\bAve\.?$/i,   'Avenue'],
   [/\bSt\.?$/i,    'Street'],
   [/\bBlvd\.?$/i,  'Boulevard'],
@@ -375,10 +379,11 @@ const ABBREVS = [
 
 function expandAbbreviations(s) {
   let out = s.trim();
+  // Apply all rules (allows a prefix expansion + a suffix expansion to both fire)
   for (const [re, full] of ABBREVS) {
-    if (re.test(out)) { out = out.replace(re, full); break; }
+    out = out.replace(re, full);
   }
-  return out;
+  return out.trim();
 }
 
 function handleGuess(raw, feedbackEl) {
