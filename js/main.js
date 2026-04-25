@@ -168,27 +168,6 @@ async function loadBoroughBoundaries() {
     paint: { 'fill-color': '#f8f6f2', 'fill-opacity': 1 },
   });
 
-  // Outer harbour mask: Boston's polygon extends far east to include Brewster Islands etc.
-  // Cover everything east of the inner harbour with the background colour.
-  map.addSource('harbour-mask', {
-    type: 'geojson',
-    data: {
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [[
-          [-71.005, 42.10], [-70.60, 42.10],
-          [-70.60, 42.55], [-71.005, 42.55],
-          [-71.005, 42.10],
-        ]],
-      },
-    },
-  });
-  map.addLayer({
-    id: 'harbour-mask-fill', type: 'fill', source: 'harbour-mask',
-    paint: { 'fill-color': '#f8f6f2', 'fill-opacity': 1 },
-  });
-
   map.addSource('boroughs', { type: 'geojson', data: geojson, generateId: true });
 
   map.addLayer({

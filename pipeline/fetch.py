@@ -67,6 +67,64 @@ NOMINATIM_IDS = {
 }
 
 
+# Clip limits: anything east of this longitude is outer harbour / open water
+HARBOUR_CLIP_LON = -71.005
+
+
+def clip_ring_to_lon(ring: list, max_lon: float) -> list:
+    """
+    Sutherland-Hodgman clip of a ring against a single vertical boundary
+    (keep everything WEST of max_lon, i.e. lon < max_lon).
+    Returns the clipped ring (may be empty if entirely outside).
+    """
+    def inside(p): return p[0] <= max_lon
+    def intersect(a, b):
+        t = (max_lon - a[0]) / (b[0] - a[0])
+        return [max_lon, a[1] + t * (b[1] - a[1])]
+
+    output = []
+    if not ring:
+        return output
+
+    prev = ring[-1]
+    for curr in ring:
+        if inside(curr):
+            if not inside(prev):
+                output.append(intersect(prev, curr))
+            output.append(curr)
+        elif inside(prev):
+            output.append(intersect(prev, curr))
+        prev = curr
+
+    # Close the ring
+    if output and output[0] != output[-1]:
+        output.append(output[0])
+    return output
+
+
+def clip_geometry(geom: dict, max_lon: float) -> dict:
+    """Clip a Polygon or MultiPolygon to keep only coords west of max_lon."""
+    if geom["type"] == "Polygon":
+        rings = [clip_ring_to_lon(r, max_lon) for r in geom["coordinates"]]
+        rings = [r for r in rings if len(r) >= 4]
+        return {"type": "Polygon", "coordinates": rings} if rings else None
+
+    if geom["type"] == "MultiPolygon":
+        polys = []
+        for poly in geom["coordinates"]:
+            rings = [clip_ring_to_lon(r, max_lon) for r in poly]
+            rings = [r for r in rings if len(r) >= 4]
+            if rings:
+                polys.append(rings)
+        if not polys:
+            return None
+        if len(polys) == 1:
+            return {"type": "Polygon", "coordinates": polys[0]}
+        return {"type": "MultiPolygon", "coordinates": polys}
+
+    return geom  # pass through unsupported types
+
+
 def fetch_boundaries() -> None:
     out_path = OUT_DIR / "sections.geojson"
     if out_path.exists():
@@ -84,15 +142,25 @@ def fetch_boundaries() -> None:
             print(f"  WARNING: no data for {section_id}")
             continue
         item = data[0]
+        geom = item["geojson"]
+
+        # Clip Boston's boundary to remove outer harbour and islands
+        if section_id == "boston":
+            geom = clip_geometry(geom, HARBOUR_CLIP_LON)
+            if geom is None:
+                print(f"  WARNING: clipping removed all geometry for {section_id}")
+                continue
+            print(f"  boundaries: clipped {section_id} to lon < {HARBOUR_CLIP_LON}")
+
         feature = {
             "type": "Feature",
             "id": i,
             "properties": {
                 "name": SECTION_NAME_TO_ID.get(item.get("name", ""), section_id),
                 "section_id": section_id,
-                "borough_id": section_id,   # shared key with NYC frontend
+                "borough_id": section_id,
             },
-            "geometry": item["geojson"],
+            "geometry": geom,
         }
         features.append(feature)
         print(f"  boundaries: fetched {section_id}")
