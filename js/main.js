@@ -1,7 +1,7 @@
 // ── Section config ────────────────────────────────────────────────────────────
 
 const BOROUGH_META = {
-  boston:     { name: 'Boston',     color: '#1a1a1a', bounds: [[-71.191, 42.228], [-70.990, 42.397]] },
+  boston:     { name: 'Boston',     color: '#1a1a1a', bounds: [[-71.191, 42.228], [-71.020, 42.400]] },
   cambridge:  { name: 'Cambridge',  color: '#3a3a3a', bounds: [[-71.160, 42.352], [-71.064, 42.404]] },
   brookline:  { name: 'Brookline',  color: '#5a5a5a', bounds: [[-71.179, 42.295], [-71.106, 42.352]] },
   somerville: { name: 'Somerville', color: '#787878', bounds: [[-71.135, 42.373], [-71.073, 42.418]] },
@@ -38,8 +38,8 @@ function saveProgress() {
 
 const isMobile = () => window.innerWidth <= 767;
 
-// Overall bounds: padded enough to show all four sections comfortably
-const BOSTON_BOUNDS = [[-71.25, 42.20], [-70.98, 42.44]];
+// Overall bounds: capped at inner harbour edge (-71.01) — outer harbour masked
+const BOSTON_BOUNDS = [[-71.25, 42.20], [-71.01, 42.44]];
 
 const map = new maplibregl.Map({
   container: 'map',
@@ -165,6 +165,27 @@ async function loadBoroughBoundaries() {
   });
   map.addLayer({
     id: 'boston-mask-fill', type: 'fill', source: 'boston-mask',
+    paint: { 'fill-color': '#f8f6f2', 'fill-opacity': 1 },
+  });
+
+  // Outer harbour mask: Boston's polygon extends far east to include Brewster Islands etc.
+  // Cover everything east of the inner harbour with the background colour.
+  map.addSource('harbour-mask', {
+    type: 'geojson',
+    data: {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [[
+          [-71.005, 42.10], [-70.60, 42.10],
+          [-70.60, 42.55], [-71.005, 42.55],
+          [-71.005, 42.10],
+        ]],
+      },
+    },
+  });
+  map.addLayer({
+    id: 'harbour-mask-fill', type: 'fill', source: 'harbour-mask',
     paint: { 'fill-color': '#f8f6f2', 'fill-opacity': 1 },
   });
 
