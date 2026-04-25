@@ -79,8 +79,8 @@ map.on('load', async () => {
 
 function applyLightMapStyle() {
   const WHITE  = '#f8f6f2';
-  const LAND   = '#f8f6f2';  // same as background — islands vanish
-  const WATER  = '#f8f6f2';  // same as background — harbour/river vanish
+  const LAND   = '#f0ede8';
+  const WATER  = '#dce8f2';
   const ROAD   = '#e2ddd7';
   const BORDER = '#d0ccc6';
 
@@ -181,6 +181,27 @@ async function loadBoroughBoundaries() {
   map.addLayer({
     id: 'boroughs-outline', type: 'line', source: 'boroughs',
     paint: { 'line-color': buildColorMatch(), 'line-width': 2, 'line-opacity': 0.9 },
+  });
+
+  // Outer-harbour mask: covers east of -70.92 so the Brewster Islands grey
+  // blob is hidden, while the coastline water colour remains visible.
+  map.addSource('harbour-mask', {
+    type: 'geojson',
+    data: {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [[
+          [-70.92, 42.10], [-70.50, 42.10],
+          [-70.50, 42.60], [-70.92, 42.60],
+          [-70.92, 42.10],
+        ]],
+      },
+    },
+  });
+  map.addLayer({
+    id: 'harbour-mask-fill', type: 'fill', source: 'harbour-mask',
+    paint: { 'fill-color': '#f8f6f2', 'fill-opacity': 1 },
   });
 }
 
