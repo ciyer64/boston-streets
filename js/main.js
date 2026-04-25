@@ -79,8 +79,8 @@ map.on('load', async () => {
 
 function applyLightMapStyle() {
   const WHITE  = '#f8f6f2';
-  const LAND   = '#f0ede8';
-  const WATER  = '#dce8f2';
+  const LAND   = '#f8f6f2';  // same as background — islands vanish
+  const WATER  = '#f8f6f2';  // same as background — harbour/river vanish
   const ROAD   = '#e2ddd7';
   const BORDER = '#d0ccc6';
 

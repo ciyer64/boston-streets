@@ -144,13 +144,7 @@ def fetch_boundaries() -> None:
         item = data[0]
         geom = item["geojson"]
 
-        # Clip Boston's boundary to remove outer harbour and islands
-        if section_id == "boston":
-            geom = clip_geometry(geom, HARBOUR_CLIP_LON)
-            if geom is None:
-                print(f"  WARNING: clipping removed all geometry for {section_id}")
-                continue
-            print(f"  boundaries: clipped {section_id} to lon < {HARBOUR_CLIP_LON}")
+        # (no clipping — harbour is hidden via map style instead)
 
         feature = {
             "type": "Feature",
