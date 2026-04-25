@@ -38,17 +38,17 @@ function saveProgress() {
 
 const isMobile = () => window.innerWidth <= 767;
 
-// Overall bounds: all four sections
-const BOSTON_BOUNDS = [[-71.22, 42.21], [-71.05, 42.43]];
+// Overall bounds: padded enough to show all four sections comfortably
+const BOSTON_BOUNDS = [[-71.25, 42.20], [-70.98, 42.44]];
 
 const map = new maplibregl.Map({
   container: 'map',
   style: 'https://tiles.openfreemap.org/styles/positron',
   center: [-71.10, 42.34],
   zoom: 12,
-  minZoom: 10,
+  minZoom: 9,
   maxZoom: 17,
-  maxBounds: [[-71.40, 42.10], [-70.80, 42.55]],
+  maxBounds: [[-71.50, 42.05], [-70.70, 42.60]],
   attributionControl: false,
 });
 
@@ -60,7 +60,7 @@ map.on('load', async () => {
   map.fitBounds(BOSTON_BOUNDS, {
     padding: isMobile()
       ? { top: 200, bottom: 60, left: 20, right: 20 }
-      : { top: 60,  bottom: 40, left: 40, right: 260 },
+      : { top: 60,  bottom: 40, left: 40, right: 360 },
     duration: 0,
   });
 
@@ -412,7 +412,7 @@ document.getElementById('back-btn').addEventListener('click', () => {
   map.fitBounds(BOSTON_BOUNDS, {
     padding: isMobile()
       ? { top: 200, bottom: 60, left: 20, right: 20 }
-      : { top: 60,  bottom: 40, left: 40, right: 260 },
+      : { top: 60,  bottom: 40, left: 40, right: 360 },
     duration: 800,
   });
 
