@@ -362,6 +362,8 @@ const ABBREVS = [
   // Named-person shorthand
   [/^JFK(\s|$)/i,  'John F. Kennedy '],
   [/^MLK(\s|$)/i,  'Martin Luther King '],
+  // Common word abbreviations
+  [/\bMt\.?\b/gi,  'Mount'],
   // Street type suffixes
   [/\bAve\.?$/i,   'Avenue'],
   [/\bSt\.?$/i,    'Street'],
