@@ -376,31 +376,13 @@ html, body {
     content: '▾';
   }
 
-  /* Input: fixed to bottom of screen */
+  /* Input: flows naturally inside the top panel */
   #guess-input {
-    position: fixed;
-    bottom: 20px;
-    left: 12px;
-    right: 12px;
-    width: auto;
     font-size: 16px; /* prevents iOS auto-zoom on focus */
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-    z-index: 20;
   }
 
-  /* Feedback: above the fixed input */
-  #guess-feedback {
-    position: fixed;
-    bottom: 72px;
-    left: 0;
-    right: 0;
-    z-index: 20;
-    text-align: center;
-    pointer-events: none;
-  }
-
-  /* Credits: avoid overlap with iOS home bar */
+  /* Credits: hidden on mobile — no room and no overlap risk */
   #credits {
-    bottom: 28px;
+    display: none;
   }
 }
